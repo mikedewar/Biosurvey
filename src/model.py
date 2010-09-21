@@ -45,6 +45,8 @@ class Model:
         self.U = U
         # store disturbance covariance matrix
         self.Q = Q
+        # store distance function
+        self.d = d
 
     def make_C_matrix(self, r_t, alpha_t, o_t):
         c = len(o_t)
@@ -55,7 +57,7 @@ class Model:
             for j in range(self.n):
                 rti2 = r_t[i]**2
                 const = alpha_t[i] / np.sqrt(2*np.pi*rti2)
-                C[i,j] = const * np.exp(-np.abs(o_t[i]-self.L[j])**2 / 2*rti2) 
+                C[i,j] = const * np.exp(-self.d(o_t[i], self.L[j]) / (2*rti2)) 
         return C
 
     def generate(self, x0, V, O, R, Alpha):
